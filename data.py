@@ -66,9 +66,8 @@ class SchemeDatum(object):
         return False
 
 class Callable(SchemeDatum):
-    def apply(self, env, args):
+    def apply(self, call):
         raise NotImplementedError
-
 
 class SpecialForm(Callable):   
     def __init__(self, name, proc):
@@ -82,9 +81,6 @@ class SpecialForm(Callable):
         return self.proc(call)
 
 class Procedure(Callable):
-    def apply(self, call):
-        raise NotImplementedError
-
     def isProcedure(self):
         return True
 
@@ -324,6 +320,10 @@ class Identifier(SchemeDatum):
 
     def isIdentifier(self):
         return True
+
+    def __eq__(self, identifier):
+        return isinstance(num, Identifier) and self.name == num.name
+
 
 class Boolean(SchemeDatum):
     def __init__(self, value):

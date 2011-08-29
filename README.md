@@ -12,8 +12,13 @@ python pyscheme.py
 Uses normal Python handling of exceptions
 
 ```
-python pyscheme.py debug
+python pyscheme.py -d
 ```
+
+In normal mode, Python exceptions are ignored and "Internal Error" is printed. With debugging mode, the familiar (Python) stacktrace is printed.
+
+### Exiting the interpreter
+Running the primitive ```(exit)``` will exit as a PyScheme routine. Additionally, the signals ```Ctrl+C``` and ```Ctrl+D``` (End of File) also halt PyScheme.
 
 ## Meta-Options
 ### Pretty-print

@@ -117,24 +117,28 @@ def repl(prompt = "pyscheme > "):
                     input_string += " {0}".format(raw_input(" " * (len(prompt) - 2) + "> "))
                     check = _check_input_parens(input_string)
                     continue
-            for element in reversed(make_list(input_string)):
+            for element in make_list(input_string):
                 util.EvalStack().push(util.EvalCall(element, glob))
                 while not util.EvalStack().isEmpty():
                     util.EvalStack().do_useful()
+        except exception.SchemeError as e:
+            print "***Error: {0}".format(e.msg)
+            print ""
+            util.EvalStack().print_stack_trace()
+            util.EvalStack().clear_stack()
+        except (KeyboardInterrupt, EOFError):
+            print ""
+            exit()
         except Exception as e:
+            print e
+            print type(e)
             if debug:
                 traceback.print_exc(file=sys.stdout)
             else:
-                print "***Error:"
-                print "   {0}".format(e.msg)
-                util.EvalStack().print_stack_trace()
-                util.EvalStack().clear_stack()
-                continue
+                print "Internal Error"
 
 def _check_input_parens(input_string):
-    # Returns
-    #  * -1 if invalid parens
-    #  * number of right parens minus number of left parens otherwise
+    # Returns -1 if invalid parens, or #(right parens) - #(left parens)
     parencount = 0
     for char in input_string:
         if char == "(":
@@ -146,6 +150,6 @@ def _check_input_parens(input_string):
     return parencount
 
 if __name__ == "__main__":
-    debug = len(sys.argv) >= 2 and sys.argv[1] == "debug"
+    debug = "-d" in sys.argv
     util.EvalStack().clear_stack()
     repl()
